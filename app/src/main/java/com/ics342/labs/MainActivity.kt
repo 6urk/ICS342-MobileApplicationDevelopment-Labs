@@ -1,43 +1,85 @@
 package com.ics342.labs
 
-import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import coil.compose.AsyncImage
 import com.ics342.labs.ui.theme.LabsTheme
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val currentConditionsViewModel: CurrentConditionsViewModel by viewModels()
+    private val forecastViewModel: ForecastViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val jsonData = loadData(resources)
-        val data = dataFromJsonString(jsonData)
         setContent {
             LabsTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    // Display the items from the JSON file in a LazyColumn
-                    ForecastScreen(data)
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    Column {
+                        CurrentConditionsView(currentConditionsViewModel)
+                        ForecastView(forecastViewModel)
+                    }
                 }
             }
         }
     }
-    private fun loadData(resources: Resources): String {
-        return resources.openRawResource(R.raw.data).bufferedReader().use { it.readText() }
+}
+
+@Composable
+fun CurrentConditionsView(
+    viewModel: CurrentConditionsViewModel
+) {
+    val currentWeather = viewModel.currentWeather.collectAsState(null)
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchCurrentWeather("55407", "+1", "a2d3351eaf14e522f80fe5130d49e421")
     }
 
-    private fun dataFromJsonString(json: String): List<Person> {
-        val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        val listType = Types.newParameterizedType(List::class.java, Person::class.java)
-        val adapter: JsonAdapter<List<Person>> = moshi.adapter(listType)
-        return adapter.fromJson(json) ?: emptyList()
+    currentWeather.value?.let { weather ->
+        Column {
+            Text(text = "High Temp: ${weather.highTemp}")
+            WeatherConditionIcon(url = weather.iconUrl)
+        }
+    }
+}
+
+@Composable
+fun ForecastView(
+    viewModel: ForecastViewModel
+) {
+    val forecast = viewModel.forecast.collectAsState(null)
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchForecast("55407", "+1", "a2d3351eaf14e522f80fe5130d49e421")
     }
 
+    forecast.value?.let { forecastData ->
+        Column {
+            Text("Forecast")
+            forecastData.forecasts.forEach { forecastItem ->
+                WeatherConditionIcon(url = forecastItem.iconUrl)
+            }
+        }
+    }
+}
+
+@Composable
+fun WeatherConditionIcon(
+    url: String
+) {
+    AsyncImage(model = url, contentDescription = "")
 }
