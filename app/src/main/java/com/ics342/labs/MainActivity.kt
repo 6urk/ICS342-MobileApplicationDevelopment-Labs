@@ -22,13 +22,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ics342.labs.ui.theme.LabsTheme
+import com.ics342.labs.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LabsTheme {
+            MyApplicationTheme {
                 val navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "weather") {
@@ -146,7 +146,7 @@ fun WeatherScreen(navController: NavHostController) {
 @Composable
 @Preview
 fun MainActivityPreview() {
-    LabsTheme {
+    MyApplicationTheme {
         val navController = rememberNavController()
 
         NavHost(navController = navController, startDestination = "weather") {
