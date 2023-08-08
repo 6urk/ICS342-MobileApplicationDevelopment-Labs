@@ -24,7 +24,7 @@ object MyAppModule {
     @Provides
     fun provideRetrofit(moshi: Moshi): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/2.5/weather?zip=55421,us&appid=a2d3351eaf14e522f80fe5130d49e421")
+            .baseUrl("https://api.openweathermap.org/data/2.5/weather?zip=55421,us&appid=a2d3351eaf14e522f80fe5130d49e421/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }

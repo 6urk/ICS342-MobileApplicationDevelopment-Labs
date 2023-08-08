@@ -10,7 +10,7 @@ interface ApiService {
         @Query("appid") apiKey: String
     ): WeatherData
 
-    @GET("forecast")
+    @GET("forecast/daily")
     suspend fun getForecast(
         @Query("zip") zipcode: String,
         @Query("appid") apiKey: String
