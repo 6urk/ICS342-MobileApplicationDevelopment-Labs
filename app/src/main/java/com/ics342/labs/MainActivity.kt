@@ -1,5 +1,6 @@
 package com.ics342.labs
 
+import ForecastViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,8 +18,9 @@ import coil.compose.AsyncImage
 import com.ics342.labs.ui.theme.LabsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+@MainActivity.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    annotation class AndroidEntryPoint
 
     private val currentConditionsViewModel: CurrentConditionsViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()

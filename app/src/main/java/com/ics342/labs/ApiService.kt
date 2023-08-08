@@ -1,5 +1,6 @@
 package com.ics342.labs
 
+
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,7 +11,7 @@ interface ApiService {
         @Query("appid") apiKey: String
     ): WeatherData
 
-    @GET("forecast")
+    @GET("forecast/daily")
     suspend fun getForecast(
         @Query("zip") zipcode: String,
         @Query("appid") apiKey: String
